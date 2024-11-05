@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{# {% load staticfiles %} #}
+{% load static %}
+
+{% block head %}
+<title>Networking</title>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+ {% endblock %}
+
+ {% block content %}
+
+ <br><br><br><br>
+  <center>
+  <font color="#686868" size="5" face="Comic Sans MS,Arial,Verdana">HABILIDADES</font>
+   <br>
+  <img src="{% static 'images/chica1.jpg'%}" height='340' width='390'>
+  </center>
+<br><br><br><br>
+     <h1>Eliminar Experiencia</h1>
+     <p>¿Estás seguro de que deseas eliminar la habilidad {{ habilidad.habilidad }}</p>
+     <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning btn-sm">Eliminar</button>
+        <a href="{% url 'home' %}" class="btn btn-warning btn-sm">Cancelar</a>
+     </form>
+
+<font size="3">
+<table class="table table-bordered">
+        <tr>
+			<td bgcolor="#F5DA81">ID</td>
+            <td bgcolor="#F5DA81">{{ habilidad.id }}}</td>
+        </tr>
+        <tr>
+			<td bgcolor="#F5DA81">HABILIDAD</td>
+            <td bgcolor="#F5DA81">{{ habilidad.habilidad }}</td>
+        </tr>
+        <tr>
+			<td bgcolor="#F5DA81">NIVEL</td>
+            <td> {{ habilidad.nivel }} </td>
+        </tr>
+        <tr>
+			<td bgcolor="#F5DA81">COMENTARIO</td>
+            <td> {{ habilidad.comentario|upper|slice:"0:30" }} </td>
+        </tr>
+    </table>
+</font>
+
+{% endblock content %}

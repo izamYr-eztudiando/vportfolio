@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Habilidad</title>
+</head>
+<body>
+    <center>
+        <h1>Editar Habilidad</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="habilidad">Habilidad:</label>
+            <input type="text" name="habilidad" id="habilidad" value="{{ habilidad.habilidad }}" required><br>
+
+            <label for="nivel">Nivel:</label>
+            <input type="text" name="nivel" id="nivel" value="{{ habilidad.nivel }}" required><br>
+
+            <label for="comentario">Comentario:</label>
+            <input type="text" name="comentario" id="comentario" value="{{ habilidad.comentario }}" required><br>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </center>
+</body>
+</html>

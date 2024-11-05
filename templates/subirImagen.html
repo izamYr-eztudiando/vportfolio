@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{# {% load staticfiles %} #}
+{% load static %}
+
+{%block head%}
+<title>Subir Imagen</title>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+<style>
+    body{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .galeria{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .imagen{
+        margin: 10px;
+        border: 1px solid #ccc;
+        padding: 5px;
+        max-width: 200px;
+    }
+    .imagen img{
+        max-width: 100%;
+    }
+</style>
+
+{%endblock%}
+
+{%block content%}
+<br><br><br><br>
+<h1>Subir Imagen</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="imagenes" multiple required>
+    <button type="submit">Subir</button>
+</form>
+
+<h2>Galería de Imagenes</h2>
+<div class="galeria">
+    {% for imagen in imagenes %}
+        {% if imagen.imagen %}
+            <div class="imagen">
+                <img src="{{ imagen.imagen.url }}" alt="{{ imagen.imagen.name }}">
+
+                <!-- Botón para mostrar el campo de entradad para editar imagen-->
+                <button type="button" class="btn btn-primary" onclick="mostrarInput ({{imagen.id}})">Editar</button> 
+
+                <!-- Formulario para editar imagen (Oculto por ahora)-->
+                <form method="post" action="{% url 'editarImagen' imagen.id %}" enctype="multipart/form-data"
+                style="display: none;" id="form-editar-{{ imagen.id }}">
+                    {% csrf_token %}
+                    <input type="file" name="nueva_imagen" required>
+                    <button type="submit" class="btn btn-success btn-sm">Guardar</button>
+                </form>
+
+                <!-- Botón para eliminar imagen-->
+                <form action="{% url 'eliminarImagen' imagen.id %}" method="post"
+                style="margin-top: 5px;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+            </div>
+            {% else %}
+                <p>No hay imagenes</p>
+            {% endif %} 
+        {% endfor %}
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    // JavaScript para mostrar el campo de entrada de archivo y el boton de "Guardar" solo al hacer clic en "Editar"
+    function mostrarInput(imagenId) {
+        //Oculta todos los formularios de edición para evitar duplicados visibles
+        document.querySelectorAll('[id^="form-editar-"]').forEach(form => form.style.display = 'none');
+
+        //Muestra el formulario correspondiente a la imagen seleccionada
+        document.getElementById('form-editar-' + imagenId).style.display = 'block';
+    }
+</script>
+{% endblock %}

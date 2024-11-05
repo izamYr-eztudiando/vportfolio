@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    <title>Networking</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+            integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+{% endblock %}
+
+{% block content %}
+
+<br><br><br><br>
+<center>
+    <font color="#686868" size="5" face="Comic Sans MS,Arial,Verdana">HABILIDADES</font>
+    <br>
+    <img src="{% static 'images/chica1.jpg' %}" height='340' width='390'>
+</center>
+
+{% if not request.user.is_authenticated %}
+
+{% endif %}
+
+{% if request.user.is_authenticated %}
+    <h2>USUARIO REGISTRADO</h2>
+{% endif %}
+
+<font size="3">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th bgcolor="#F5DA81">ID</th>
+            <th bgcolor="#F5DA81">HABILIDAD</th>
+            <th bgcolor="#F5DA81">NIVEL</th>
+            <th bgcolor="#F5DA81">COMENTARIO</th>
+            <th colspan="4" style="text-align:center;" bgcolor="#AAF5AA">OPERACIONES</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for r in lista_habilidades %}
+            <tr>
+                <td> {{ r.id }} </td>
+                <td> {{ r.habilidad|upper|slice:"0:12" }} </td>
+                <td> {{ r.nivel }}</td>
+                <td> {{ r.comentario|upper|slice:"0:30" }}</td>
+
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <td><a class='btn btn-secondary btn-sm' href="{% url 'agregarHabilidad' %}">AGREGAR</a></td>
+                    <td><a class='btn btn-primary btn-sm' href="{% url 'ver_habilidad' id=r.id %}">VER</a></td>
+                    <td><a class='btn btn-danger btn-sm' href="{% url 'eliminarHabilidad' pk=r.id %}">ANULAR</a></td>
+                    <td><a class='btn btn-success btn-sm' href="{% url 'modificarHabilidad' id=r.id %}">EDITAR</a></td>
+                </form>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</font>
+
+{% if lista_habilidades.has_other_pages %}
+    <font size="4">
+        <ul class="pagination">
+            {% if lista_habilidades.has_previous %}
+                <li><a href="?page={{ lista_habilidades.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in lista_habilidades.paginator.page_range %}
+                {% if reservas.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if lista_habilidades.has_next %}
+                <li><a href="?page={{ lista_habilidades.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    </font>
+{% endif %}
+
+{% endblock content %}
