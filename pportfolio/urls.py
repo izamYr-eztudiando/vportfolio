@@ -49,7 +49,9 @@ urlpatterns = [
     #re_path(r'^login/$', views.login, name='login'),
     path('generar_pdf/<int:entrevistador_id>/', views.generar_pdf, name='generar_pdf'),
     path('listar_entrevistadores/', views.listar_entrevistadores, name='listar_entrevistadores'),
-    path('subir_curriculum/', views.subirCurriculum, name='subirCurriculum'),
+    path('curriculums/', views.curriculums, name='curriculums'),
+    path('crear_curriculum/', views.crearCurriculum, name='crearCurriculm'),
+    path('mostrar_curriculum/<int:curriculum_id>/', views.mostrarCurriculum, name='mostrarCurriculum'),
     path('editar_curriculum/<int:curriculum_id>/', views.editarCurriculum, name='editarCurriculum'),
     path('eliminar_curriculum/<int:curriculum_id>/', views.eliminarCurriculum, name='eliminarCurriculum'),
 ]

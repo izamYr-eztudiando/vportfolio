@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{# {% load staticfiles %} #}
+{% load static %}
+
+{%block head%}
+<title>Subir Imagen</title>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+<style>
+    body{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .galeria{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .imagen{
+        margin: 10px;
+        border: 1px solid #ccc;
+        padding: 5px;
+        max-width: 200px;
+    }
+    .imagen img{
+        max-width: 100%;
+    }
+</style>
+
+{%endblock%}
+
+{% block content %}
+<br><br><br><br><br><br><br>
+<h2>Crear Curriculum</h2>
+<br><br>
+<div class="galeria">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="apellido1" placeholder="Primer Apellido" required>
+        <input type="text" name="apellido2" placeholder="Segundo Apellido" required>
+        <input type="text" name="email" placeholder="Email" required>
+        <input type="text" name="telefono" placeholder="Telefono" required>
+        <button type="submit">Crear</button>
+    </form>
+    {% for curriculum in lista_curriculums %}	
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th bgcolor="#F5DA81">ID</th>
+                    <th bgcolor="#F5DA81">Nombre</th>
+                    <th bgcolor="#F5DA81">Primer Apellido</th>
+                    <th bgcolor="#F5DA81">Segundo Apellido</th>
+                    <th bgcolor="#F5DA81">Email</th>
+                    <th bgcolor="#F5DA81">Telefono</th>
+                    <th colspan="4" style="text-align:center;" bgcolor="#AAF5AA">OPERACIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td> {{ curriculum.id }} </td>
+                    <td> {{ curriculum.nombre|upper|slice:"0:12" }} </td>
+                    <td> {{ curriculum.apellido1|upper|slice:"0:12" }} </td>
+                    <td> {{ curriculum.apellido2|upper|slice:"0:12" }} </td>
+                    <td> {{ curriculum.email|upper|slice:"0:12" }} </td>
+                    <td> {{ curriculum.telefono|upper|slice:"0:12" }} </td>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <td><a class='btn btn-primary btn-sm' href="{% url 'crearCurriculm' %}">CREAR</a></td>
+                        <td><a class='btn btn-primary btn-sm' href="{% url 'mostrarCurriculum' curriculum.id %}">VER</a></td>
+                        <td><a class='btn btn-danger btn-sm' href="{% url 'eliminarCurriculum' curriculum.id %}">ANULAR</a></td>
+                        <td><a class='btn btn-success btn-sm' href="{% url 'editarCurriculum' curriculum.id %}">EDITAR</a></td>
+                    </form>
+                </tr>
+            </tbody>
+        </table>
+    {% endfor %}
+</div>
+{% endblock content %}

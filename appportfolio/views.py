@@ -507,20 +507,60 @@ def generar_pdf(request, entrevistador_id):
     p.save()
 
     return response
-    
-def subirCurriculum(request):
-    print("Subiendo Curriculum")
+
+def curriculums(request):
+    print("hola estoy en curriculums")
+    #select * from Habilidades order by curriculum
+    #curriculums es un objeto de tipo queryset
+    lista_curriculums = Curriculum.objects.all().order_by('id')
+    numregistros = 0
+    for r in lista_curriculums:
+        numregistros = numregistros + 1
+    page = request.GET.get('page')
+    paginator = Paginator(lista_curriculums, 5)
+    if page == None:
+        print(" page recibe fuera de get o post NONE=" + str(page))
+        page = paginator.num_pages
+        request.session["pagina"] = page
+    else:
+        print(" page recibe esle del none de geo o post=" + str(page))
+        request.session["pagina"] = page
+
+    if request.method == 'GET':
+        pagina = request.session["pagina"]
+        print(" page recibe en GET=" + str(pagina))
     if request.method == 'POST':
-        curriculums = request.FILES.getlist('curriculums')
-        for curriculum in curriculums:
-            if curriculum.name.endswith(('.pdf', '.PDF')):
-                c=Curriculum()
-                c.curriculum = curriculums
-                c.save()
-        return redirect('subirCurriculum')
-    
-    curriculum = Curriculum.objects.all()
-    return render(request, 'subirCurriculum.html', {'curriculum': curriculum})
+        pagina = request.session["pagina"]
+        print(" page recibe en POST=" + str(pagina))
+
+    # condición muy importante para saber si existe la variable en la sesión
+    if "pagina" in request.session:
+        page = request.session["pagina"]
+        print(" page recibe de sesion=" + str(page))
+
+    try:
+        lista_curriculums = paginator.get_page(page)
+    except PageNotAnInteger:
+        lista_curriculums = paginator.page(1)
+    except EmptyPage:
+        lista_curriculums = paginator.page(paginator.num_pages)
+
+    context = {'lista_curriculums': lista_curriculums, 'numregistros':numregistros}
+    return render(request, 'curriculums.html', context=context)
+
+def crearCurriculum(request):
+    print("Creando Curriculum")
+    curriculums = request.FILES.getlist('curriculums')
+    if request.method == 'POST':
+        nombre = request.POST.get("nombre")
+        apellido1 = request.POST.get("apellido1")
+        apellido2 = request.POST.get("apellido2")
+        email = request.POST.get("email")
+        telefono = request.POST.get("telefono")
+        curriculum = Curriculum(nombre=nombre, apellido1=apellido1, apellido2=apellido2, email=email, telefono=telefono)
+        curriculum.save()
+        return redirect('curriculums')
+    return render(request, 'curriculums.html', {'curriculums': curriculums})
 
 def editarCurriculum(request, curriculum_id):
     curriculum = get_object_or_404(Curriculum, id = curriculum_id)
@@ -528,14 +568,18 @@ def editarCurriculum(request, curriculum_id):
     if request.method == 'POST' and request.FILES.get('nuevo_curriculum'):
         curriculum.curriculum = request.FILES['nuevo_curriculum'] #Se agarra el archivo subido por el usuario a través del formulario por el name="nuevo_curriculum"
         curriculum.save()
-        return redirect('subirCurriculum')
+        return redirect('curriculums')
     
-    return redirect('subirCurriculum')
+    return redirect('curriculums')
     
 def eliminarCurriculum(request, curriculum_id):
     curriculum = get_object_or_404(Curriculum, id = curriculum_id)
     if request.method == 'POST':
         curriculum.delete()
-        return redirect('subirCurriculum') #Redirige a la galeria de curriculum
+        return redirect('curriculums') #Redirige a la galeria de curriculum
     
-    return redirect('subirCurriculum')
+    return redirect('curriculums')
+
+def mostrarCurriculum(request, curriculum_id):
+    curriculum = get_object_or_404(Curriculum, id = curriculum_id)
+    return render(request, 'mostrarCurriculum.html', {'curriculum': curriculum})
