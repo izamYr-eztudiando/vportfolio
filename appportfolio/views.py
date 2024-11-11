@@ -1,20 +1,26 @@
 from __future__ import unicode_literals
-
-from lib2to3.fixes.fix_input import context
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http  import HttpResponse
+from appportfolio.models import *
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger	#paginacion
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse
-from appportfolio.models import *
-from django.shortcuts import redirect
+from django.contrib.auth import authenticate, get_user_model, login,logout  #todas son por defecto
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout
+from django.views.decorators.csrf import csrf_protect
+
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.contrib.auth import authenticate, get_user_model, login, logout
-from django.shortcuts import render 
-import urllib
+from django.views.decorators.csrf import csrf_exempt
 
+#email
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.contrib import messages
 
-
+#pdf's
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 # Create your views here.
 
@@ -26,15 +32,23 @@ def home(request):
     return HttpResponse(cadena)
 '''
 
+# Este home es cuando el usuario no esta autenticado
+def home_not_authenticated(request):
+    global DEBUG
+    print("hola estoy en home "+str(DEBUG))
+    nombreProyecto = 'PORTFOLIO'
+    fechaCreacion = '23/09/2024'
+    usuario = 'prueba'
+    context = {'nombreProyecto': nombreProyecto, 'fechaCreacion': fechaCreacion, 'usuario':usuario} 
+    return render(request, 'home.html', context=context)
+
+# Este home es cuando el usuario esta autenticado
 def home(request):
     global DEBUG
     print("hola estoy en home "+str(DEBUG))
     nombreProyecto = 'PORTFOLIO'
     fechaCreacion = '23/09/2024'
     actual = request.user
-    idusuario = 0
-    idusuario = actual.id
-    request.session['idusuario']=idusuario
     numconectados = 0
     dato = ""
     
@@ -61,11 +75,22 @@ def home(request):
     
     usuario = 'prueba'
 
+    #imagen usuario
+
+    idusuario=0
+    idusuario=actual.id 
+    request.session['idusuario']=idusuario
+    print("idusuario="+str(idusuario))
     entrevistador=Entrevistador.objects.get(user=idusuario)
-    fotoperfil = settings.MEDIA_URL + str(entrevistador.avatar) if entrevistador.avatar else settings.MEDIA_URL + 'MONEDA3.jpg'
-
-
+    idEntrevistador=entrevistador.id
+    print("idEntrevistador="+str(idEntrevistador))
+    print("FOTO="+str(entrevistador.avatar))
+    fotoperfil = settings.MEDIA_URL + str(entrevistador.avatar) if entrevistador.avatar else settings.MEDIA_URL +"MONEDA3.jpg"
+    print("avatar=" + str(fotoperfil))
+    context = {'fotoperfil':fotoperfil}
+    #return redirect('home')  
     context = {'nombreProyecto':nombreProyecto, 'fechaCreacion':fechaCreacion, 'usuario':usuario, 'fotoperfil':fotoperfil}
+    #context = {'nombreProyecto':nombreProyecto, 'fechaCreacion':fechaCreacion, 'usuario':usuario}
     return render(request, 'home.html', context=context)
 
 def navbar(request):
@@ -95,6 +120,9 @@ def habilidades(request):
     #select * from Habilidades order by habilidad
     #habilidades es un objeto de tipo queryset
     lista_habilidades = Habilidad.objects.all().order_by('habilidad')
+    numregistros = 0
+    for r in lista_habilidades:
+        numregistros = numregistros + 1
     page = request.GET.get('page')
     paginator = Paginator(lista_habilidades, 5)
     if page == None:
@@ -124,7 +152,7 @@ def habilidades(request):
     except EmptyPage:
         lista_habilidades = paginator.page(paginator.num_pages)
 
-    context = {'lista_habilidades': lista_habilidades}
+    context = {'lista_habilidades': lista_habilidades, 'numregistros':numregistros}
     return render(request, 'habilidades.html', context=context)
 
 def agregarHabilidad(request):
@@ -167,6 +195,9 @@ def categorias(request):
     print("hola estoy en categorias")
     #El metodo Alfonso
     lista_categorias = Categoria.objects.all()  # select * from Experiencias;
+    numregistros = 0
+    for r in lista_categorias:
+        numregistros = numregistros + 1
     page = request.GET.get('page')
     # 2 registros por página
     paginator = Paginator(lista_categorias, 5)
@@ -197,7 +228,7 @@ def categorias(request):
     except EmptyPage:
         lista_categorias = paginator.page(paginator.num_pages)
 
-    context = {'lista_categorias': lista_categorias}
+    context = {'lista_categorias': lista_categorias, 'numregistros':numregistros}
     return render(request, 'categorias.html', context=context)
 
 def estudios(request):
@@ -309,20 +340,20 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            actual = request.user
-            idusuario = 0
-            idusuario = actual.id
+            actual=request.user   #usuario actual
+            idusuario=0
+            idusuario=actual.id 
             request.session['idusuario']=idusuario
-            print("idusuario"+str(idusuario))
+            print("idusuario="+str(idusuario))
             entrevistador=Entrevistador.objects.get(user=idusuario)
-            idEntrevistador = entrevistador.id
-            print("idEntrevistador"+str(idEntrevistador))
-            print("FOTO" + str(entrevistador.avatar))
-            fotoperfil = settings.MEDIA_URL + str(entrevistador.avatar) if entrevistador.avatar else settings.MEDIA_URL + 'MONEDA3.jpg'
-            print("avatar" + str(fotoperfil))
-            context = {'fotoperfil': fotoperfil}
+            idEntrevistador=entrevistador.id
+            print("idEntrevistador="+str(idEntrevistador))
+            print("FOTO="+str(entrevistador.avatar))
+            fotoperfil = settings.MEDIA_URL + str(entrevistador.avatar) if entrevistador.avatar else settings.MEDIA_URL +"MONEDA3.jpg"
+            print("avatar=" + str(fotoperfil))
+            context = {'fotoperfil':fotoperfil}
             return render(request, 'home.html', context=context)
-            # return redirect('home')
+            #return redirect('home')  
         else:
             return render(request, 'login.html', {'error': 'Credenciales inválidas'})
     return render(request, 'Login.html')
@@ -413,3 +444,98 @@ def eliminarVideo(request, video_id):
         return redirect('subirVideo')
     
     return redirect('subirVideo')
+
+def contacto(request):
+    if request.method == 'POST':
+        nombre = request.POST.get("nombre")
+        email = request.POST.get("email")
+        asunto = request.POST.get("asunto")
+        mensaje = request.POST.get("mensaje")
+
+        context = {'nombre':nombre, 'email':email, 'asunto':asunto, 'mensaje':mensaje}
+        template = render_to_string('email_template.html', context=context)
+
+        email = EmailMessage(asunto, template,
+        settings.EMAIL_HOST_USER, ['isamir.bb8@gmail.com'])
+
+        email.fail_silently = False #que no marque error en gmail
+        email.send()
+
+        messages.success(request, 'Su mensaje ha sido enviado exitosamente')
+        return redirect('home')
+    
+    return render(request, 'correo.html')
+
+def listar_entrevistadores(request):
+    entrevistadores = Entrevistador.objects.all()
+    return render(request, 'listar_entrevistadores.html', {'entrevistadores': entrevistadores})
+
+def generar_pdf(request, entrevistador_id):
+    entrevistador = Entrevistador.objects.get(id=entrevistador_id)
+
+    # Crear una respuesta HTTP con contenido tipo PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="entrevistador_{entrevistador.id}.pdf"'
+
+    # Crear el objeto canvas de ReportLab
+    p = canvas.Canvas(response, pagesize=letter)
+    
+    # Configuración del título
+    p.setFont("Helvetica-Bold", 16)
+    p.setFillColor(colors.darkblue)
+    p.drawCentredString(300, 770, "Reporte de Entrevistador")
+
+    # Volver al tamaño de fuente normal
+    p.setFont("Helvetica", 12)
+    p.setFillColor(colors.black)
+
+    #Datos del entrevistador
+    p.drawString(100, 720, f"ID: {entrevistador.id}")
+    p.drawString(100, 700, f"Empresa: {entrevistador.empresa or 'N/A'}")
+    p.drawString(100, 680, f"Fecha de Entrevista: {entrevistador.fecha_entrevista or 'N/A'}")
+    p.drawString(100, 660, f"Conectado: {'Si' if entrevistador.conectado else 'No'}")
+    p.drawString(100, 640, f"Seleccionado: {'Si' if entrevistador.seleccionado else 'No'}")
+    p.drawString(100, 620, f"Usuario: {entrevistador.user.username if entrevistador.user else 'N/A'}")
+
+    # Añadir avatar si existe
+    if entrevistador.avatar:
+        avatar_path = entrevistador.avatar.path
+        p.drawImage(avatar_path, 100, 500, width = 100, height = 100)
+
+    # Guardar el PDF
+    p.showPage()
+    p.save()
+
+    return response
+    
+def subirCurriculum(request):
+    print("Subiendo Curriculum")
+    if request.method == 'POST':
+        curriculums = request.FILES.getlist('curriculums')
+        for curriculum in curriculums:
+            if curriculum.name.endswith(('.pdf', '.PDF')):
+                c=Curriculum()
+                c.curriculum = curriculums
+                c.save()
+        return redirect('subirCurriculum')
+    
+    curriculum = Curriculum.objects.all()
+    return render(request, 'subirCurriculum.html', {'curriculum': curriculum})
+
+def editarCurriculum(request, curriculum_id):
+    curriculum = get_object_or_404(Curriculum, id = curriculum_id)
+
+    if request.method == 'POST' and request.FILES.get('nuevo_curriculum'):
+        curriculum.curriculum = request.FILES['nuevo_curriculum'] #Se agarra el archivo subido por el usuario a través del formulario por el name="nuevo_curriculum"
+        curriculum.save()
+        return redirect('subirCurriculum')
+    
+    return redirect('subirCurriculum')
+    
+def eliminarCurriculum(request, curriculum_id):
+    curriculum = get_object_or_404(Curriculum, id = curriculum_id)
+    if request.method == 'POST':
+        curriculum.delete()
+        return redirect('subirCurriculum') #Redirige a la galeria de curriculum
+    
+    return redirect('subirCurriculum')

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    <title>Vportfolio</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+            integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+{% endblock %}
+
+{% block content %}
+<br><br><br><br>
+<center>
+    <font color="#686868" size="6" face="Comic Sans MS,Arial,Verdana">Lista de Entrevistadores</font>
+    <br>
+    <img src="{% static 'images/chica2.jpg'%}" height="190" width="190">
+</center>
+<h1>Seleccione un Entrevistador para Generar PDF</h1>
+    <ul>
+        {% for entrevistador in entrevistadores %}
+            <li>
+                <h3> {{ entrevistador.empresa }} - {{ entrevistador.user.username }}
+                    <a href="{% url 'generar_pdf' entrevistador.id %}">Generar PDF</a>
+                </h3>
+            </li>
+        {% endfor %}
+    </ul>
+ {% if not request.user.is_authenticated %}
+ {% endif %} 
+ {% if request.user.is_authenticated %}
+ {% endif %}
+{% endblock content %}

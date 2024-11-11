@@ -18,24 +18,24 @@
 			
 			    <!-- bloque 1 usuarios anonimos no autorizados se quedan en la landing Page -->
 			    {% if not request.user.is_authenticated %}
-				    <li><a href="{% url 'home' %}"><font size="3" color="#0000FF">Inicio</font></a></li>
+				    <li><a href="{% url 'home_not_authenticated' %}"><font size="3" color="#0000FF">Inicio</font></a></li>
                     <li><a href="{% url 'sobremi' %}"><font size="3" color="#0000FF">Sobre Mi</font></a></li>
                     <li><a href="{% url 'habilidades' %}"><font size="3" color="#0000FF">Habilidades</font></a></li>
 				    <li><a href="{% url 'categorias' %}"><font size="3" color="#0000FF">Categorias</font></a></li>
                     <li><a href="{% url 'estudios' %}"><font size="3" color="#0000FF">Estudios</font></a></li>
-                    <li><a href="{% url 'experiencias' %}"><font size="3" color="#0000FF">Experiencias</font></a></li>
-					
-
+                    <li><a href="{% url 'experiencias' %}"><font size="3" color="#0000FF">Experiencias</font></a></li>					
 				{% endif %}
 				
 				<!-- bloque 2 usuarios autorizados -->
 				{% if request.user.is_authenticated %}
 					<li><a href="{% url 'home' %}"><font size="5" color="#0000FF">Inicio</font></a></li>
 					<li><a href="{% url 'experiencias' %}"><font size="5" color="#0000FF">Mis Experiencias</font></a></li>
-      		        <li><a href="{% url 'estudios' %}"><font size="5" color="#0000FF">Mis Estudios</font></a></li>
+      		        <li><a href="{% url 'habilidades' %}"><font size="5" color="#0000FF">Habilidades</font></a></li>
 				    <li><a href="{% url 'subirImagen' %}"><font size="5" color="#0000FF">Imagenes</font></a></li>
 				    <li><a href="{% url 'subirVideo' %}"><font size="5" color="#0000FF">Videos</font></a></li>
-				    <li><a href="{% url 'habilidades' %}"><font size="5" color="#0000FF">Notificaciones</font></a></li>
+				    <li><a href="{% url 'contacto' %}"><font size="5" color="#0000FF">Enviar Email</font></a></li>
+					<li><a href="{% url 'listar_entrevistadores' %}"><font size="5" color="#0000FF">Entrevistadores</font></a></li>
+					<li><a href="{% url 'subirCurriculum' %}"><font size="5" color="#0000FF">Curriculum</font></a></li>
 
 				{% endif %}
             </ul>

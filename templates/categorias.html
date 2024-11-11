@@ -19,8 +19,10 @@
         <font color="#686868" size="5" face="Comic Sans MS,Arial,Verdana">CATEGORIAS</font>
         <br>
         <img src="{% static 'images/chica1.jpg' %}" height='340' width='390'>
+        <br><br>
+        <h3> Hay un total de {{ numregistros }} categorias registradas</h3>
     </center>
-
+    <br>
     {% if not request.user.is_authenticated %}
 
     {% endif %}

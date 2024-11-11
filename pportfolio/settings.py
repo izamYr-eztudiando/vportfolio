@@ -54,27 +54,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pportfolio.wsgi.application'
 
-if DEBUG == False:
+if DEBUG == True:
     DATABASES = {
         'default':{
-            'ENGINE': 'django.db.backend.sqlite3',
+            'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
 #Modo local windows
-if DEBUG == True:
-    print("***********************DESAROLLO EN LOCAL")
-    DATABASES = {
-        'default':{
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'vportfolio',
-            'USER': 'postgres',
-            'PASSWORD': 'Adivinala1.',
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
-    }
+# if DEBUG == False:
+#     print("***********************DESAROLLO EN LOCAL")
+#     DATABASES = {
+#         'default':{
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#             'NAME': 'vportfolio',
+#             'USER': 'postgres',
+#             'PASSWORD': 'Adivinala1.',
+#             'HOST': 'localhost',
+#             'PORT': '5432',
+#         }
+#     }
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -164,3 +164,11 @@ TEMPLATE_LOADERS = (
 )
 TEMPLATE_DIRS = (
 )
+
+#email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com' 
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True #seguridad de gmail
+EMAIL_HOST_USER = 'isamir.bb8@gmail.com' #emisor del email
+EMAIL_HOST_PASSWORD = 'dzyk gshb bdqs ljrv'

@@ -18,6 +18,8 @@
     <font color="#686868" size="5" face="Comic Sans MS,Arial,Verdana">HABILIDADES</font>
     <br>
     <img src="{% static 'images/chica1.jpg' %}" height='340' width='390'>
+    <h3> Hay un total de {{ numregistros }} habilidades registradas</h3>
+    <br>
 </center>
 
 {% if not request.user.is_authenticated %}

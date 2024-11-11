@@ -55,3 +55,8 @@ class VideoAdmin(admin.ModelAdmin):
     search_fields = ('id','video','comentario')
 admin.site.register(Video, VideoAdmin)
 
+class CurriculumAdmin(admin.ModelAdmin):
+    list_display = [co.name for co in Curriculum._meta.get_fields() if hasattr(co, 'verbose_name')]
+    search_fields = ('id','nombre','apellido1','apellido2','email','telefono')
+    list_filter = ('id','nombre','apellido1','apellido2','email','telefono')
+admin.site.register(Curriculum, CurriculumAdmin)

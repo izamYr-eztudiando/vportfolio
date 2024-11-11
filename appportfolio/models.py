@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-from cgi import maxlen
-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -107,21 +104,23 @@ class Experiencia(models.Model):
 
 class Entrevistador(models.Model):
     id = models.AutoField(primary_key=True)
-    avatar = models.ImageField('Avatar', blank=True, null=True, upload_to='media/')
-    empresa = models.CharField("Empresa", max_length=30, null=True, blank=True)
-    fecha_entrevista = models.DateField("Fecha de Entrevista", null=True, blank=True)
-    conectado = models.BooleanField("Conectado", null=True, blank=True)
-    seleccionado = models.BooleanField("Seleccionado", null=True, blank=True)
-    # foreign keys requerido desde django 2.0
-    user = models.ForeignKey(User, related_name='entrevistados_usuarios', null=True, blank=True, on_delete=models.PROTECT)
+    avatar= models.ImageField('Avatar', blank=True, null = True, upload_to="media/")
+    empresa = models.CharField('Empresa',max_length=30,null=True, blank=True)
+    fecha_entrevista= models.DateField('Fecha Entrevista',null=True, blank=True)
+    conectado = models.BooleanField('Conectado',null=True, blank=True) 
+    seleccionado = models.BooleanField('Seleccionado',null=True, blank=True) 
+    # forteigns keys requerido desde django 2.0
+    user = models.ForeignKey(User, related_name='entrevistados_usuario', 
+    null=True, blank=True, on_delete=models.PROTECT)  
 
     class Meta:
-        verbose_name = "Entrevistador" #Esto es el nombre que se verá en la pantalla de administración de Django
-        verbose_name_plural = "Entrevistadores"
+        verbose_name = 'Entrevistador'  
+        verbose_name_plural = 'Entrevistadores'
         ordering = ['empresa']
-    
+
     def __str__(self):
-        return '%s,%s,%s,%s,%s,%s' % (self.id, self.empresa, self.fecha_entrevista, self.conectado, self.seleccionado, self.user)
+        return "%s,%s,%s,%s,%s,%s" % (self.id, self.empresa, self.fecha_entrevista, 
+        self.conectado, self.seleccionado, self.user)   
     
 class Imagen(models.Model):
     id = models.AutoField(primary_key=True)
@@ -149,3 +148,44 @@ class Video (models.Model):
     def __str__(self):
         return '%s,%s,%s' % (self.id, self.video, self.comentario)
     
+class Curriculum(models.Model):
+    id = models.AutoField(primary_key=True)
+    nombre = models.CharField("Nombre", max_length=15, null=True, blank=True)
+    apellido1 = models.CharField("Primer apellido", max_length=25, null=True, blank=True)
+    apellido2 = models.CharField("Segundo apellido", max_length=25, null=True, blank=True)
+    email = models.CharField("Email", max_length=200, null=True, blank=True)
+    telefono = models.CharField("Telefono", max_length=9, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Curriculum" 
+        verbose_name_plural = "Curriculums"
+        ordering = ['nombre']
+    
+    def __str__(self):
+        return '%s,%s,%s,%s,%s' % (self.id, self.nombre, self.apellido1, self.apellido2, self.email)
+    
+class DetalleCurriculumEstudio(models.Model):
+    id = models.AutoField(primary_key=True)
+    estudios = models.ForeignKey(Estudio, related_name='detalle_estudios', null=True, blank=True, on_delete=models.PROTECT)
+    curriculum = models.ForeignKey(Curriculum, related_name='detalle_curriculum_estudio', null=True, blank=True, on_delete=models.PROTECT)
+    
+    class Meta:
+        verbose_name = "Detalle curriculum estudio" 
+        verbose_name_plural = "Detalle curriculum estudios"
+        ordering = ['estudios']
+    
+    def __str__(self):
+        return '%s,%s,%s' % (self.id, self.estudios, self.curriculum)
+
+class DetalleCurriculumExperiencia(models.Model):
+    id = models.AutoField(primary_key=True)
+    experiencias = models.ForeignKey(Experiencia, related_name='detalle_experiencias', null=True, blank=True, on_delete=models.PROTECT)
+    curriculum = models.ForeignKey(Curriculum, related_name='detalle_curriculum_experiencia', null=True, blank=True, on_delete=models.PROTECT)
+    
+    class Meta:
+        verbose_name = "Detalle curriculum experiencia" 
+        verbose_name_plural = "Detalle curriculum experiencias"
+        ordering = ['experiencias']
+        
+    def __str__(self):
+        return '%s,%s,%s' % (self.id, self.experiencias, self.curriculum)

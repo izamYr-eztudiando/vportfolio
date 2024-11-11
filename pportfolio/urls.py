@@ -18,7 +18,9 @@ from django.views.static import serve
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('navbar/', views.navbar, name='navbar'),
-    re_path(r'^$', views.home,name='home'),
+    #re_path(r'^home_not_authenticated$', views.home_not_authenticated,name='home_not_authenticated'),
+    re_path(r'^$', views.home_not_authenticated,name='home_not_authenticated'), # esto es el / de la url
+    re_path(r'^home$', views.home,name='home'),
     re_path('habilidades', views.habilidades,name='habilidades'),
     path('agregarHabilidad', views.agregarHabilidad, name='agregarHabilidad'),
     re_path(r'^(?P<id>\d+)/modificarHabilidad$', views.modificarHabilidad,name='modificarHabilidad'),
@@ -43,8 +45,13 @@ urlpatterns = [
     path('subirVideo/', views.subirVideo, name='subirVideo'),
     path('editarVideo/<int:video_id>/', views.editarVideo, name='editarVideo'),
     path('eliminarVideo/<int:video_id>/', views.eliminarVideo, name='eliminarVideo'),
-    
+    path('contacto/', views.contacto, name='contacto'),
     #re_path(r'^login/$', views.login, name='login'),
+    path('generar_pdf/<int:entrevistador_id>/', views.generar_pdf, name='generar_pdf'),
+    path('listar_entrevistadores/', views.listar_entrevistadores, name='listar_entrevistadores'),
+    path('subir_curriculum/', views.subirCurriculum, name='subirCurriculum'),
+    path('editar_curriculum/<int:curriculum_id>/', views.editarCurriculum, name='editarCurriculum'),
+    path('eliminar_curriculum/<int:curriculum_id>/', views.eliminarCurriculum, name='eliminarCurriculum'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
