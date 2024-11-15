@@ -50,10 +50,13 @@ urlpatterns = [
     path('generar_pdf/<int:entrevistador_id>/', views.generar_pdf, name='generar_pdf'),
     path('listar_entrevistadores/', views.listar_entrevistadores, name='listar_entrevistadores'),
     path('curriculums/', views.curriculums, name='curriculums'),
-    path('crear_curriculum/', views.crearCurriculum, name='crearCurriculm'),
+    path('crear_curriculum/', views.crearCurriculum, name='crearCurriculum'),
     path('mostrar_curriculum/<int:curriculum_id>/', views.mostrarCurriculum, name='mostrarCurriculum'),
     path('editar_curriculum/<int:curriculum_id>/', views.editarCurriculum, name='editarCurriculum'),
     path('eliminar_curriculum/<int:curriculum_id>/', views.eliminarCurriculum, name='eliminarCurriculum'),
+    path('crear_curriculum/', views.crearCurriculum, name='crearCurriculum'),
+    path('mostrar_curriculm/<int:curriculum_id>/', views.mostrarCurriculum, name='mostrarCurriculum'),
+    path('generar-pdf/<int:curriculum_id>/', views.generarPDF, name='generarPDF'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

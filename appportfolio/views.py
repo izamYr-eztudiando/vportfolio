@@ -21,6 +21,10 @@ from django.contrib import messages
 #pdf's
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.lib.utils import ImageReader
+import os
+
 
 # Create your views here.
 
@@ -551,22 +555,41 @@ def curriculums(request):
 def crearCurriculum(request):
     print("Creando Curriculum")
     curriculums = request.FILES.getlist('curriculums')
+    # studies = Estudio.objects.all()
+    # experiences = Experiencia.objects.all()
+    
     if request.method == 'POST':
         nombre = request.POST.get("nombre")
         apellido1 = request.POST.get("apellido1")
         apellido2 = request.POST.get("apellido2")
         email = request.POST.get("email")
         telefono = request.POST.get("telefono")
+        # for e in studies:
+        #     detailStudies = DetalleCurriculumEstudio()
+        #     detailStudies.estudios = e
+        #     detailStudies.save()
+
+        # for e in experiences:
+        #     detailExperiences = DetalleCurriculumExperiencia()
+        #     detailExperiences.experiencias = e
+        #     detailExperiences.save()
+
         curriculum = Curriculum(nombre=nombre, apellido1=apellido1, apellido2=apellido2, email=email, telefono=telefono)
         curriculum.save()
-        return redirect('curriculums')
-    return render(request, 'curriculums.html', {'curriculums': curriculums})
+        return redirect('curriculums') #Redirige a la galeria de curriculum
+    
+    return render(request, 'crearCurriculum.html', {'curriculums': curriculums})
 
 def editarCurriculum(request, curriculum_id):
-    curriculum = get_object_or_404(Curriculum, id = curriculum_id)
+    curriculum = get_object_or_404(Curriculum, id=curriculum_id)
 
     if request.method == 'POST' and request.FILES.get('nuevo_curriculum'):
         curriculum.curriculum = request.FILES['nuevo_curriculum'] #Se agarra el archivo subido por el usuario a través del formulario por el name="nuevo_curriculum"
+        curriculum.nombre = request.POST.get("nombre")
+        curriculum.apellido1 = request.POST.get("apellido1")
+        curriculum.apellido2 = request.POST.get("apellido2")
+        curriculum.email = request.POST.get("email")
+        curriculum.telefono = request.POST.get("telefono")
         curriculum.save()
         return redirect('curriculums')
     
@@ -582,4 +605,75 @@ def eliminarCurriculum(request, curriculum_id):
 
 def mostrarCurriculum(request, curriculum_id):
     curriculum = get_object_or_404(Curriculum, id = curriculum_id)
-    return render(request, 'mostrarCurriculum.html', {'curriculum': curriculum})
+    estudios = DetalleCurriculumEstudio.objects.filter(curriculum = curriculum) 
+    experiencias = DetalleCurriculumExperiencia.objects.filter(curriculum = curriculum)
+    context = {'curriculum': curriculum, 'estudios': estudios, 'experiencias': experiencias }
+    return render(request, 'mostrarCurriculum.html', context = context)
+
+def generarPDF(request, curriculum_id):
+    print("generarPDF")
+    curriculum = get_object_or_404(Curriculum, id = curriculum_id)
+    estudios = DetalleCurriculumEstudio.objects.filter(curriculum = curriculum)
+    experiencias = DetalleCurriculumExperiencia.objects.filter(curriculum = curriculum)
+
+    # Crear la respuesta HTTPResponse con tipo de contenido PDF
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = f'attachment; filename = "curriculum_{curriculum.nombre}_{curriculum.apellido1}.pdf"'
+
+    # Crear un objeto canvas de ReportLab para generar el PDF
+    c = canvas.Canvas(response, pagesize=letter)
+    width, heigth = letter # Tamaño de la página
+
+    # Cargar imagen de avatar
+    try:
+        avatar_path = os.path.join(settings.MEDIA_ROOT, "MEDIA/moneda3.jpg")
+        avatar = ImageReader(avatar_path)
+        c.drawImage(avatar, width - 150, heigth - 150, width=100, height=100) #Primero x e y, luego ancho y alto
+    except Exception as e:
+        print(f"No se pudo carga la image: {e}")
+        pass # Si no se encuentra la imagen, el PFG se generará sin ella
+
+    # Titulo del curriculu, en color
+    c.setFont("Helvetica-Bold", 20)
+    c.setFillColor(colors.HexColor("#4B8BBE")) # Cambia a cualquier color hex que prefieras
+    c.drawString(100, heigth - 100, f"Curriculum de {curriculum.nombre} {curriculum.apellido1}")
+
+    # Información de contacto en color diferente
+    c.setFont("Helvetica", 12)
+    c.setFillColor(colors.HexColor("#306998"))
+    c.drawString(100, heigth - 130, f"Email: {curriculum.email}") # la f antes de la cadena de texto para introducir campos y variables del python
+    c.drawString(100, heigth - 150, f"Teléfono: {curriculum.telefono}")
+
+    # Información de contacto en color diferente 
+    y_position = heigth - 200
+    c.setFont("Helvetica", 12) # Ponemos la fuente
+    c.setFillColor(colors.HexColor("#FFD43B")) # El color que queramos en hexadecimal
+    c.drawString(100, y_position, "Estudios:") # El texto que aparece con estas características
+
+    # Mostrar cada estudio con detalles
+    # c.setFont("Helvetica", 12)
+    y_position -= 20
+    for estudio in estudios:
+        c.setFillColor(colors.black)
+        c.drawString(100, y_position, f"{estudio.estudios.titulacion} en {estudio.estudios.lugarEstudio} desde ({estudio.estudios.fechaInicio}) - {estudio.estudios.fechaFin}")
+        y_position -= 20
+
+    # Sección de experiencia laboral
+    y_position -= 40
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColor(colors.HexColor("#306998"))
+    c.drawString(100, y_position, "Experiencia laboral:")
+    
+    y_position -= 20
+    c.setFont("Helvetica", 12)
+    for experiencia in experiencias:
+        c.setFillColor(colors.black)
+        c.drawString(100, y_position, f"{experiencia.experiencias.categoria} en {experiencia.experiencias.empresa} desde ({experiencia.experiencias.fecha_inicio} - {experiencia.experiencias.fecha_fin})")
+        y_position -= 20
+
+    # Finalizar el PDF
+    c.showPage() # Si tienes más páginas
+    c.save()
+
+    return response
+    

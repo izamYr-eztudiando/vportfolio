@@ -60,3 +60,13 @@ class CurriculumAdmin(admin.ModelAdmin):
     search_fields = ('id','nombre','apellido1','apellido2','email','telefono')
     list_filter = ('id','nombre','apellido1','apellido2','email','telefono')
 admin.site.register(Curriculum, CurriculumAdmin)
+
+class DetalleCurriculumEstudioAdmin(admin.ModelAdmin):
+    list_display = [co.name for co in DetalleCurriculumEstudio._meta.get_fields() if hasattr(co, 'verbose_name')]
+    search_fields = ('id', 'estudios', 'curriculum')
+admin.site.register(DetalleCurriculumEstudio, DetalleCurriculumEstudioAdmin)
+
+class DetalleCurriculumExperienciaAdmin(admin.ModelAdmin):
+    list_display = [co.name for co in DetalleCurriculumExperiencia._meta.get_fields() if hasattr(co, 'verbose_name')]
+    search_fields = ('id', 'experiencias', 'curriculum')
+admin.site.register(DetalleCurriculumExperiencia, DetalleCurriculumExperienciaAdmin)

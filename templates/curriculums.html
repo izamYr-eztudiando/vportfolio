@@ -35,12 +35,8 @@
 <div class="galeria">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="text" name="nombre" placeholder="Nombre" required>
-        <input type="text" name="apellido1" placeholder="Primer Apellido" required>
-        <input type="text" name="apellido2" placeholder="Segundo Apellido" required>
-        <input type="text" name="email" placeholder="Email" required>
-        <input type="text" name="telefono" placeholder="Telefono" required>
-        <button type="submit">Crear</button>
+      
+        <a href="{% url 'crearCurriculum' %}">Crear</a>
     </form>
     {% for curriculum in lista_curriculums %}	
         <table class="table table-bordered">
@@ -65,7 +61,7 @@
                     <td> {{ curriculum.telefono|upper|slice:"0:12" }} </td>
                     <form action="" method="post">
                         {% csrf_token %}
-                        <td><a class='btn btn-primary btn-sm' href="{% url 'crearCurriculm' %}">CREAR</a></td>
+                        <td><a class='btn btn-primary btn-sm' href="{% url 'crearCurriculum' %}">CREAR</a></td>
                         <td><a class='btn btn-primary btn-sm' href="{% url 'mostrarCurriculum' curriculum.id %}">VER</a></td>
                         <td><a class='btn btn-danger btn-sm' href="{% url 'eliminarCurriculum' curriculum.id %}">ANULAR</a></td>
                         <td><a class='btn btn-success btn-sm' href="{% url 'editarCurriculum' curriculum.id %}">EDITAR</a></td>
@@ -75,4 +71,29 @@
         </table>
     {% endfor %}
 </div>
+
+{% if lista_curriculums.has_other_pages %}
+    <font size="4">
+        <ul class="pagination">
+            {% if lista_curriculums.has_previous %}
+                <li><a href="?page={{ lista_curriculums.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in lista_curriculums.paginator.page_range %}
+                {% if reservas.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if lista_curriculums.has_next %}
+                <li><a href="?page={{ lista_curriculums.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    </font>
+{% endif %}
+
 {% endblock content %}

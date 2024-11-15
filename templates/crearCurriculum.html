@@ -1,0 +1,24 @@
+<font size="3">
+    <h1>Agregar Curriculum</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" id="nombre" required>
+
+        <label for="apellido1">Primer Apellido:</label>
+        <input type="text" name="apellido1" id="apellido1" required>
+
+        <label for="apellido2">Segundo Apellido:</label>
+        <input type="text" name="apellido2" id="apellido2" required>
+
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" required>
+
+        <label for="telefono">Telefono:</label>
+        <input type="text" name="telefono" id="telefono" required>
+
+        <label for="estudio">Estudios</label>
+
+        <button type="submit">Guardar Curriculum</button>
+    </form>
+</font>

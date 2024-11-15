@@ -1,50 +1,21 @@
-{% extends "base.html" %}
-{# {% load staticfiles %} #}
-{% load static %}
-
-{% block head %}
-<title>Networking</title>
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
- {% endblock %}
-
- {% block content %}
-
- <br><br><br><br>
-  <center>
-  <font color="#686868" size="5" face="Comic Sans MS,Arial,Verdana">Curriculum</font>
-   <br>
-  <img src="{% static 'images/chica1.jpg'%}" height='340' width='390'>
-  </center>
-
 <font size="3">
-<table class="table table-bordered">
-        <tr>
-			<td bgcolor="#F5DA81">ID</td>
-            <td bgcolor="#F5DA81">{{ curriculum.id }}}</td>
-        </tr>
-        <tr>
-			<td bgcolor="#F5DA81">NOMBRE</td>
-            <td bgcolor="#F5DA81">{{ curriculum.nombre }}</td>
-        </tr>
-        <tr>
-			<td bgcolor="#F5DA81">APELLIDO1</td>
-            <td> {{ curriculum.apellido1 }} </td>
-        </tr>
-        <tr>
-			<td bgcolor="#F5DA81">APELLIDO2</td>
-            <td> {{ curriculum.apellido2 }} </td>
-        </tr>
-        <tr>
-			<td bgcolor="#F5DA81">EMAIL</td>
-            <td> {{ curriculum.email }} </td>
-        </tr>
-        <tr>
-			<td bgcolor="#F5DA81">TELEFONO</td>
-            <td> {{ curriculum.telefono }} </td>
-        </tr>
-    </table>
-</font>
+    <h1>Curriculum de {{ curriculum.nombre }} {{ curriculum.apellido1 }} {{ curriculum.apellido2 }}</h1>
+    <p>Email: {{ curriculum.email }}</p>
+    <p>Telefono: {{ curriculum.telefono }}</p>
 
-{% endblock content %}
+    <h2>Estudios</h2>
+    <ul>
+        {% for estudio in estudios %}
+            <li>{{ estudio.estudios.titulacion }} en {{ estudio.estudios.lugarEstudio }} desde ({{ estudio.estudios.fechaInicio }}) - {{ estudio.estudios.lugarEstudio }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Experiencia laboral</h2>
+    <ul>
+        {% for experiencia in experiencias %}
+            <li>{{ experiencia.experiencias.categoria }} en {{ experiencia.experiencias.empresa }} desde ({{ experiencia.experiencias.fecha_inicio }}) - {{ experiencia.experiencias.fecha_fin }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'generarPDF' curriculum.id %}">Generar PDF</a>
+</font>
