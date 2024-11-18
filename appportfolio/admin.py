@@ -70,3 +70,8 @@ class DetalleCurriculumExperienciaAdmin(admin.ModelAdmin):
     list_display = [co.name for co in DetalleCurriculumExperiencia._meta.get_fields() if hasattr(co, 'verbose_name')]
     search_fields = ('id', 'experiencias', 'curriculum')
 admin.site.register(DetalleCurriculumExperiencia, DetalleCurriculumExperienciaAdmin)
+
+class NoticiaAdmin(admin.ModelAdmin):
+    list_display = [co.name for co in Noticia._meta.get_fields() if hasattr(co, 'verbose_name')]
+    search_fields = ('id','titulo','contenido','fecha_creacion','imagen')
+admin.site.register(Noticia, NoticiaAdmin)

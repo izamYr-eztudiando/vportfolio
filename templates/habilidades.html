@@ -16,7 +16,7 @@
 <br><br><br><br>
 <center>
     <font color="#686868" size="5" face="Comic Sans MS,Arial,Verdana">HABILIDADES</font>
-    <br>
+    <br><br>
     <img src="{% static 'images/chica1.jpg' %}" height='340' width='390'>
     <h3> Hay un total de {{ numregistros }} habilidades registradas</h3>
     <br>
@@ -27,7 +27,6 @@
 {% endif %}
 
 {% if request.user.is_authenticated %}
-    <h2>USUARIO REGISTRADO</h2>
 {% endif %}
 
 <font size="3">

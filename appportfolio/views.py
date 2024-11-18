@@ -337,11 +337,12 @@ def modificarExperiencia(request, pk):
     return render(request, 'modificar_experiencia.html', {'experiencia': experiencia})
 
 def login_view(request):
-    print("login_view")
+    print("login_view") # si el usuario esta autenticado, redirige a la página principal
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
+        # si no existe el usuario autenticado, redirige a la página de login
         if user is not None:
             login(request, user)
             actual=request.user   #usuario actual
@@ -677,3 +678,20 @@ def generarPDF(request, curriculum_id):
 
     return response
     
+def listar_noticias(request):
+    noticias = Noticia.objects.all().order_by('-fecha_creacion')
+    return render(request, 'lista_noticias.html', {'noticias': noticias})
+
+def crear_noticia(request):
+    if request.method == 'POST':
+        titulo = request.POST.get('titulo')
+        contenido = request.POST.get('contenido')
+        imagen = request.FILES.get('imagen')
+
+        if titulo and contenido:
+            noticia = Noticia.objects.create(titulo=titulo, contenido=contenido, imagen=imagen)
+            return redirect('listar_noticias') # retorna hacia otro metodo a traves de la urls.py
+        else:
+            return HttpResponse("Error: El título y el contenido son obligatorios.", status=400)
+        
+    return render(request, 'crear_noticia.html')

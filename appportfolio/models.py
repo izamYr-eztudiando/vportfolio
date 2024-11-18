@@ -189,3 +189,19 @@ class DetalleCurriculumExperiencia(models.Model):
         
     def __str__(self):
         return '%s,%s,%s' % (self.id, self.experiencias, self.curriculum)
+    
+class Noticia(models.Model):
+    id = models.AutoField(primary_key=True)
+    titulo = models.CharField("Titulo", max_length=50, null=True, blank=True)
+    contenido = models.TextField("Contenido")
+    fecha_creacion = models.DateTimeField("Fecha de creacion", auto_now_add=True)
+    imagen = models.ImageField("Imagen", null=True, blank=True, upload_to='noticias/')
+
+    class Meta:
+        verbose_name = "Noticia"
+        verbose_name_plural = "Noticias"
+        ordering = ['id']
+
+    def __str__(self):
+        return '%s,%s,%s,%s,%s' % (self.id, self.titulo, self.contenido, self.fecha_creacion, self.imagen)
+    
