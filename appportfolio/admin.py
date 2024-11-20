@@ -75,3 +75,14 @@ class NoticiaAdmin(admin.ModelAdmin):
     list_display = [co.name for co in Noticia._meta.get_fields() if hasattr(co, 'verbose_name')]
     search_fields = ('id','titulo','contenido','fecha_creacion','imagen')
 admin.site.register(Noticia, NoticiaAdmin)
+
+@admin.register(Valoracion)
+class ValoracionAdmin(admin.ModelAdmin):
+    list_display = [co.name for co in Valoracion._meta.get_fields() if hasattr(co, 'verbose_name')]
+    readonly_fields = ('media_aspectos',)
+
+    def save_model(self, request, obj, form, change):
+        # Calcula automáticamente la media
+        if obj.votos_entrevista and obj.votos_empresa:
+            obj.media_aspectos = (obj.votos_entrevista + obj.votos_empresa) / 2
+        super().save_model(request, obj, form, change)

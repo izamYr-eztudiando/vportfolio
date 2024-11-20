@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 ################################################
@@ -205,3 +206,14 @@ class Noticia(models.Model):
     def __str__(self):
         return '%s,%s,%s,%s,%s' % (self.id, self.titulo, self.contenido, self.fecha_creacion, self.imagen)
     
+class Valoracion(models.Model):
+    id = models.AutoField(primary_key=True)
+    votos_entrevista = models.DecimalField("Votos Entrevista", max_digits=3, decimal_places=1, null=True, blank=True)
+    votos_empresa = models.DecimalField("Votos Empresa", max_digits=3, decimal_places=1, null=True, blank=True)
+    media_aspectos = models.DecimalField("Media Aspectos", max_digits=3, decimal_places=1, null=True, blank=True)
+    entrevista = models.CharField("Descrición Entrevista", max_length=200, null=True, blank=True)
+    empresa = models.CharField("Descripción Empresa", max_length=200, null=True, blank=True)
+    timestamp = models.DateTimeField("Fecha", default=timezone.now)
+
+    def __str__(self):
+        return '%s,%s,%s,%s,%s,%s,%s' % (self.id, self.votos_entrevista, self.votos_empresa, self.media_aspectos, self.entrevista, self.empresa, self.timestamp)

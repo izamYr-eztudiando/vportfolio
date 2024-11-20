@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    <title>Networking</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+            integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+    <style>
+        .rating {
+            direction: rtl;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .rating input {
+            display: none;
+        }
+        .rating label {
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+        }
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffc107;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<br><br><br><br>
+<div class="container mt-4">
+    <h1>Añadir Nueva Valoración</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="entrevista">Descripción de la Entrevista:</label>
+        <input type="text" id="entrevista" name="entrevista" required>
+        <br>
+        <label for="empresa">Descripción de la Empresa:</label>
+        <input type="text" id="empresa" name="empresa" required>
+        <br>
+        <label>Votos Entrevista:</label>
+        <div class="rating">
+            <input type="radio" id="entrevista-5" name="votos_entrevista" value="5">
+            <label for="entrevista-5" title="5 estrellas">&#9733;</label>
+            <input type="radio" id="entrevista-4" name="votos_entrevista" value="4">
+            <label for="entrevista-4" title="4 estrellas">&#9733;</label>
+            <input type="radio" id="entrevista-3" name="votos_entrevista" value="3">
+            <label for="entrevista-3" title="3 estrellas">&#9733;</label>
+            <input type="radio" id="entrevista-2" name="votos_entrevista" value="2">
+            <label for="entrevista-2" title="2 estrellas">&#9733;</label>
+            <input type="radio" id="entrevista-1" name="votos_entrevista" value="1">
+            <label for="entrevista-1" title="1 estrella">&#9733;</label>
+        </div>
+        <br>
+        <label>Votos Empresa:</label>
+        <div class="rating">
+            <input type="radio" id="empresa-5" name="votos_empresa" value="5">
+            <label for="empresa-5" title="5 estrellas">&#9733;</label>
+            <input type="radio" id="empresa-4" name="votos_empresa" value="4">
+            <label for="empresa-4" title="4 estrellas">&#9733;</label>
+            <input type="radio" id="empresa-3" name="votos_empresa" value="3">
+            <label for="empresa-3" title="3 estrellas">&#9733;</label>
+            <input type="radio" id="empresa-2" name="votos_empresa" value="2">
+            <label for="empresa-2" title="2 estrellas">&#9733;</label>
+            <input type="radio" id="empresa-1" name="votos_empresa" value="1">
+            <label for="empresa-1" title="1 estrella">&#9733;</label>
+        </div>
+        <br>
+        <button type="submit">Añadir Valoración</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
