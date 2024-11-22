@@ -25,6 +25,9 @@ from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 import os
 
+#para el chat
+from django.http import JsonResponse
+
 
 # Create your views here.
 
@@ -737,3 +740,38 @@ def añadir_valoraciones(request):
         return redirect('listar_valoraciones')
     
     return render(request, 'add.html')
+
+@login_required
+def chat_view(request, entrevistador_id):
+    entrevistador = get_object_or_404(Entrevistador, id = entrevistador_id)
+    mensajes = Mensaje.objects.filter(
+        (models.Q(remitente=request.user) & models.Q(destinatario=entrevistador.user)) |
+        (models.Q(remitente=entrevistador.user) & models.Q(destinatario=request.user))
+    )
+    # Agregar la propiedad 'clase' para usarla en el template
+    for mensaje in mensajes:
+        mensaje.clase = 'enviado' if mensaje.remitente == request.user else 'recibido'
+
+    # Renderizar solo el chat para la respuesta AJAX
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'mensajesHtml': render_to_string('chat_mensajes.html', {'mensajes': mensajes}),
+        })
+    
+    return render(request, 'chat.html', {'entrevistador': entrevistador, 'mensajes': mensajes})
+
+@login_required
+def enviar_mensaje(request):
+    if request.method == 'POST':
+        contenido = request.POST.get('contenido')
+        destinatario_id = request.POST.get('destinatario_id')
+        destinatario = get_object_or_404(User, id = destinatario_id)
+
+        mensaje = Mensaje.objects.create(
+            remitente = request.user,
+            destinatario = destinatario,
+            contenido = contenido,
+        )
+        return JsonResponse({'status': 'success', 'mensaje': mensaje.contenido, 'fecha_envio': mensaje.fecha_envio})
+
+    return JsonResponse({'status': 'error', 'message': 'Método no permitido'})

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    <title>Networking</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+            integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        #chat-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+        }
+        .mensaje {
+            margin-bottom: 10px;
+        }
+        .enviado {
+            text-align: right;
+            color: blue;
+        }
+        .recibido {
+            text-align: left;
+            color: green;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<br><br><br><br>
+<div class="container mt-4"></div>
+    <h1>Chat con {{ entrevistador.empresa }}</h1>
+
+    <div class="chat-box">
+        <div class="mensaje {{ mensaje.clase }}"></div>
+            <p>{{ mensaje.contenido }}</p>
+            <small>{{ mensaje.fecha_envio|date:"d M Y H:i" }}</small>
+        </div>
+    </div>
+
+    <form id="mensaje-form">
+        <textarea name="contenido" placeholder="Escribe un mensaje"></textarea>
+        <input type="hidden" name="destinatario_id" value="{{ entrevistador.user.id }}">
+        <button type="submit">Enviar</button>
+    </form>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        // Enviar mensaje
+        $('#mensaje-form').on('submit', function(e) {
+            e.preventDefault
+            $.ajax({
+                url: "{% url 'enviar_mensaje' %}",
+                type: "POST",
+                data: $(this).serialize(),
+                headers: { 'X-CSRFToken': '{{ csrf_token }}'},
+                success: function(response) {
+                    if (response.status === 'success') {
+                        const mensajeHtml = `
+                            <div class="mensaje enviado">
+                                <p>${response.mensaje}</p>
+                                <small>${response.fecha_envio}</small>
+                            </div>`;
+                        $('#chat-box').append(mensajeHtml);
+                        $('textarea[name="contenido"]').val('');
+                    }
+                }
+            });
+        });
+    </script>
+    
+    <script>
+        // Polling: actualizar los mensajes cada 5 segundos
+        // URL para obtener los mensajes
+        function cargarMensajes() {
+            $.ajax({
+                url: "{% url 'chat_view' entrevistador.id %}",
+                type: "GET",
+                success: function(response) {
+                    // Actualizar el chat-box con los nuevos mensajes
+                    $('#chat-box').html(response.mensajeHtml);
+                    // Desplazar al último mensaje
+                    $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                }
+            });
+        }
+
+        // Cargar los mensajes cada 5 segundos
+        setInterval(cargarMensajes, 5000);
+    </script>
+    
+{% endblock %}

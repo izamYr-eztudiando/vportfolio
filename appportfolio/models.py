@@ -217,3 +217,16 @@ class Valoracion(models.Model):
 
     def __str__(self):
         return '%s,%s,%s,%s,%s,%s,%s' % (self.id, self.votos_entrevista, self.votos_empresa, self.media_aspectos, self.entrevista, self.empresa, self.timestamp)
+
+class Mensaje(models.Model):
+    remitente = models.ForeignKey(User, related_name='mensajes_enviados', on_delete=models.CASCADE)
+    destinatario = models.ForeignKey(User, related_name='mensajes_recibidos', on_delete=models.CASCADE)
+    contenido = models.TextField('Contenido del mensaje')
+    fecha_envio = models.DateTimeField('Fecha de envío', auto_now_add=True)
+    leido = models.BooleanField('Leído', default=False)
+
+    class Meta:
+        ordering = ['fecha_envio']
+
+    def __str__(self):
+        return f"De: {self.remitente.username} Para: {self.destinatario.username} - {self.contenido[:30]}"
