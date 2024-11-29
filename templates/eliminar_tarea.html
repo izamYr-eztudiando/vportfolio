@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{# {% load staticfiles %} #}
+{% load static %}
+
+{% block head %}
+<title>Networking</title>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+{% endblock %}
+
+{% block content %}
+<br><br><br><br>
+<center>
+    <font color="#686868" size="5" face="Comic Sans MS,Arial,Verdana">TAREAS</font>
+    <br>
+    <img src="{% static 'images/chica1.jpg' %}" height="340" width="390"> <!-- los atributos de medida en la imagen no hacen falta la unidad de medida -->
+</center>
+<br><br><br><br>
+<h1>Eliminar Tarea</h1>
+<p>¿Estás seguro de que deseas eliminar la tarea {{ tarea.tarea }} creada el {{ tarea.fecha|date:"d/m/Y" }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-warning btn-sm">Eliminar</button>
+    <a href="{% url 'tareas' %}" class="btn btn-warning btn-sm">Cancelar</a>
+</form>
+<font size="3">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th bgcolor="#686868">ID</th>
+                <th bgcolor="#686868">TAREA</th>
+                <th bgcolor="#686868">FECHA</th>
+                <th bgcolor="#686868">ESTADO</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th bgcolor="#00FFFF"> {{ tarea.id }} </th>
+                <th bgcolor="#00FFFF"> {{ tarea.tarea }} </th>
+                <th bgcolor="#00FFFF"> {{ tarea.fecha|date:"d/m/Y" }} </th>
+                <th bgcolor="#00FFFF"> {{ tarea.estado }} </th>
+            </tr>
+        </tbody>
+    </table>
+</font>
+
+{% endblock content %}

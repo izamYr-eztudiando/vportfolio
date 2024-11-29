@@ -230,3 +230,29 @@ class Mensaje(models.Model):
 
     def __str__(self):
         return f"De: {self.remitente.username} Para: {self.destinatario.username} - {self.contenido[:30]}"
+    
+class Estado(models.Model):
+    id = models.AutoField(primary_key=True)
+    estado = models.CharField("Estado", max_length=25, null=True, blank=True)
+
+    class Meta: 
+        verbose_name = "Estado"
+        verbose_name_plural = "Estados"
+        ordering = ['estado']
+    
+    def __str__(self):
+        return '%s,%s' % (self.id, self.estado)
+    
+class Tareas(models.Model):
+    id = models.AutoField(primary_key=True)
+    tarea = models.CharField("Tarea", max_length=25, null=True, blank=True)
+    fecha = models.DateField("Fecha", null=True, blank=True)
+    estado = models.ForeignKey(Estado, related_name='tareas_estado', null=True, blank=True, on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = "Tarea"
+        verbose_name_plural = "Tareas"
+        ordering = ['tarea']
+
+    def __str__(self):
+        return '%s,%s,%s,%s' % (self.id, self.tarea, self.fecha, self.estado)

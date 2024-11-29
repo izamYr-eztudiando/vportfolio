@@ -28,17 +28,19 @@
 				
 				<!-- bloque 2 usuarios autorizados -->
 				{% if request.user.is_authenticated %}
-					<li><a href="{% url 'home' %}"><font size="3" color="#0000FF">Inicio</font></a></li>
-					<li><a href="{% url 'experiencias' %}"><font size="3" color="#0000FF">Experiencias</font></a></li>
-      		        <li><a href="{% url 'habilidades' %}"><font size="3" color="#0000FF">Habilidades</font></a></li>
-				    <li><a href="{% url 'subirImagen' %}"><font size="3" color="#0000FF">Imagenes</font></a></li>
-				    <li><a href="{% url 'subirVideo' %}"><font size="3" color="#0000FF">Videos</font></a></li>
-				    <li><a href="{% url 'contacto' %}"><font size="3" color="#0000FF">Enviar Email</font></a></li>
-					<li><a href="{% url 'listar_entrevistadores' %}"><font size="3" color="#0000FF">Entrevistadores</font></a></li>
-					<li><a href="{% url 'curriculums' %}"><font size="3" color="#0000FF">Curriculum</font></a></li>
-					<li><a href="{% url 'listar_noticias' %}"><font size="3" color="#0000FF">Noticias</font></a></li>
-					<li><a href="{% url 'añadir_valoraciones' %}"><font size="3" color="#0000FF">Valorar</font></a></li>
-					<li><a href="{% url 'listar_valoraciones' %}"><font size="3" color="#0000FF">Valoraciones</font></a></li>
+					<li><a href="{% url 'home' %}"><font size="2" color="#0000FF">Inicio</font></a></li>
+					<li><a href="{% url 'experiencias' %}"><font size="2" color="#0000FF">Experiencias</font></a></li>
+      		        <li><a href="{% url 'habilidades' %}"><font size="2" color="#0000FF">Habilidades</font></a></li>
+				    <li><a href="{% url 'subirImagen' %}"><font size="2" color="#0000FF">Imagenes</font></a></li>
+				    <li><a href="{% url 'subirVideo' %}"><font size="2" color="#0000FF">Videos</font></a></li>
+				    <li><a href="{% url 'contacto' %}"><font size="2" color="#0000FF">Enviar Email</font></a></li>
+					<li><a href="{% url 'listar_entrevistadores' %}"><font size="2" color="#0000FF">Entrevistadores</font></a></li>
+					<li><a href="{% url 'curriculums' %}"><font size="2" color="#0000FF">Curriculum</font></a></li>
+					<li><a href="{% url 'listar_noticias' %}"><font size="2" color="#0000FF">Noticias</font></a></li>
+					<li><a href="{% url 'añadir_valoraciones' %}"><font size="2" color="#0000FF">Valorar</font></a></li>
+					<li><a href="{% url 'listar_valoraciones' %}"><font size="2" color="#0000FF">Valoraciones</font></a></li>
+					<li><a href="{% url 'seleccionar_entrevistadores' %}"><font size="2" color="#0000FF">Chat</font></a></li>
+					<li><a href="{% url 'tareas' %}"><font size="2" color="#0000FF">Tareas</font></a></li>
 
 				{% endif %}
             </ul>

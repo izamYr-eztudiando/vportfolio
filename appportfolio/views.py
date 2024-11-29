@@ -315,6 +315,7 @@ def experiencias(request):
 
     context = {'lista_experiencias': lista_experiencias, 'numregistros': numregistros}
     return render(request, 'experiencias.html', context=context)
+
 def ver_experiencia(request,id):
     expe_id=id
     experiencia = Experiencia.objects.get(id=expe_id)
@@ -775,3 +776,140 @@ def enviar_mensaje(request):
         return JsonResponse({'status': 'success', 'mensaje': mensaje.contenido, 'fecha_envio': mensaje.fecha_envio})
 
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'})
+
+@login_required
+def seleccionar_entrevistadores(request):
+    entrevistadores = Entrevistador.objects.all()
+    # Si el usuario está enviando un formulario, redirigir al chat con el entrevistador seleccionado
+    if request.method == 'POST':
+        entrevistador_id = request.POST.get('entrevistador_id')
+        return redirect('chat_view', entrevistador_id=entrevistador_id)
+    return render(request, 'seleccionar_entrevistador.html', {'entrevistadores': entrevistadores})
+
+def tareas(request):
+    print("hola estoy en tareas")
+
+    lista_tareas = Tareas.objects.all().order_by('fecha')
+    numregistros = 0
+    for r in lista_tareas:
+        numregistros = numregistros + 1
+
+    page = request.GET.get('page')
+    paginator = Paginator(lista_tareas, 3)
+    if page == None:
+        print("page recibe fuera de get o post NONE=" + str(page))
+        page = paginator.num_pages
+        request.session["pagina"] = page
+    else:
+        print("page recibe esle del none de geo o post=" + str(page))
+        request.session["pagina"] = page
+
+    if request.method == 'GET':
+        pagina = request.session["pagina"]
+        print("page recibe en GET=" + str(pagina))
+    if request.method == 'POST':
+        pagina = request.session["pagina"]
+        print("page recibe en POST=" + str(pagina))
+
+    # condición muy importante para saber si existe la variable en la sesión
+    if "pagina" in request.session:
+        page = request.session["pagina"]
+        print("page recibe de sesion=" + str(page))
+    
+    try:
+        lista_tareas = paginator.get_page(page)
+    except PageNotAnInteger:
+        lista_tareas = paginator.page(1)
+    except EmptyPage:
+        lista_tareas = paginator.page(paginator.num_pages)
+
+    context = {'lista_tareas': lista_tareas, 'numregistros': numregistros}
+    return render(request, 'tareas.html', context=context)
+
+def experiencias(request):
+    print("hola estoy en experiencias")
+    lista_experiencias = Experiencia.objects.all().order_by('id')
+    numregistros = 0
+    for r in lista_experiencias:
+        numregistros = numregistros + 1
+    page = request.GET.get('page')
+    paginator = Paginator(lista_experiencias, 2)
+    if page == None:
+        print(" page recibe fuera de get o post NONE=" + str(page))
+        page = paginator.num_pages
+        request.session["pagina"] = page
+    else:
+        print(" page recibe esle del none de geo o post=" + str(page))
+        request.session["pagina"] = page
+
+    if request.method == 'GET':
+        pagina = request.session["pagina"]
+        print(" page recibe en GET=" + str(pagina))
+    if request.method == 'POST':
+        pagina = request.session["pagina"]
+        print(" page recibe en POST=" + str(pagina))
+
+    # condición muy importante para saber si existe la variable en la sesión
+    if "pagina" in request.session:
+        page = request.session["pagina"]
+        print(" page recibe de sesion=" + str(page))
+
+    try:
+        lista_experiencias = paginator.get_page(page)
+    except PageNotAnInteger:
+        lista_experiencias = paginator.page(1)
+    except EmptyPage:
+        lista_experiencias = paginator.page(paginator.num_pages)
+
+    context = {'lista_experiencias': lista_experiencias, 'numregistros': numregistros}
+    return render(request, 'experiencias.html', context=context)
+
+def ver_tarea(request, tarea_id):
+    tarea = get_object_or_404(Tareas, id = tarea_id)
+    return render(request, 'ver_tarea.html', {'tarea': tarea})
+
+def agregar_tarea(request):
+    estados = Estado.objects.all()
+    if request.method == 'POST':
+        tarea = request.POST.get('tarea')
+        fecha = request.POST.get('fecha')
+        #estado = request.POST.get('estado')
+        est = request.POST.get('estado')
+        estado = Estado.objects.get(estado=est)
+      #  entrevistador=Entrevistador.objects.get(user=idusuario)
+
+ 
+        tar = Tareas.objects.create(
+            tarea = tarea,
+            fecha = fecha,
+            estado = estado
+        )
+        tar.save()
+        return redirect('tareas')
+    
+    context = {'estados': estados}
+    return render(request, 'agregar_tarea.html', context=context)
+
+def modificar_tarea(request, tarea_id):
+    estados = Estado.objects.all()
+    tarea = get_object_or_404(Tareas, id = tarea_id)
+    if request.method == 'POST':
+        tarea.tarea = request.POST.get('tarea')
+        tarea.fecha = request.POST.get('fecha')
+        #tarea.estado = request.POST.get('estado')
+        est = request.POST.get('estado')
+        estado = Estado.objects.get(estado=est)
+        tarea.estado = estado
+        tarea.save()
+        return redirect('tareas')
+    
+    context = {'estados':estados, 'tarea':tarea}
+    return render(request, 'modificar_tarea.html', context=context)
+
+def eliminar_tarea(request, tarea_id):
+    tarea = get_object_or_404(Tareas, id = tarea_id)
+    if request.method == 'POST':
+        tarea.delete()
+        return redirect('tareas')
+    
+    return render(request, 'eliminar_tarea.html', {'tarea': tarea})

@@ -86,3 +86,13 @@ class ValoracionAdmin(admin.ModelAdmin):
         if obj.votos_entrevista and obj.votos_empresa:
             obj.media_aspectos = (obj.votos_entrevista + obj.votos_empresa) / 2
         super().save_model(request, obj, form, change)
+
+class EstadoAdmin(admin.ModelAdmin):
+    list_display = [co.name for co in Estado._meta.get_fields() if hasattr(co, 'verbose_name')]
+    search_fields = ('id','estado')
+admin.site.register(Estado, EstadoAdmin)
+
+class TareasAdmin(admin.ModelAdmin):
+    list_display = [co.name for co in Tareas._meta.get_fields() if hasattr(co, 'verbose_name')]
+    search_fields = ('id','tarea','fecha','estado')
+admin.site.register(Tareas, TareasAdmin)

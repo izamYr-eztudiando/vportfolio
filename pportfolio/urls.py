@@ -62,6 +62,14 @@ urlpatterns = [
     path('listar_valoraciones/', views.listar_valoraciones, name='listar_valoraciones'),
     path('actualizar_valoraciones/<int:pk>/edit/', views.actualizar_valoraciones, name='actualizar_valoraciones'),
     path('añadir_valoraciones/add/', views.añadir_valoraciones, name='añadir_valoraciones'),
+    path('seleccionar_entrevistadores/', views.seleccionar_entrevistadores, name='seleccionar_entrevistadores'),
+    path('chat_view/<int:entrevistador_id>/', views.chat_view, name='chat_view'),
+    path('chat/enviar/', views.enviar_mensaje, name='enviar_mensaje'),
+    path('tarea/', views.tareas, name='tareas'),
+    path('ver_tarea/<int:tarea_id>/', views.ver_tarea, name='ver_tarea'),
+    path('agregar_tarea/', views.agregar_tarea, name='agregar_tarea'),
+    path('modificar_tarea/<int:tarea_id>/', views.modificar_tarea, name='modificar_tarea'),
+    path('eliminar_tarea/<int:tarea_id>/', views.eliminar_tarea, name='eliminar_tarea'),
     ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

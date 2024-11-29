@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat con {{ entrevistador.empresa }}</title>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
@@ -10,24 +13,22 @@
           integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
           crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{% endblock %}
 
 {% block content %}
-<br><br><br><br><br><br><br><br>
+<br><br><br><br>
 <div class="container mt-4">
-    <h1>Chat</h1>
-
-    {% for mensaje in mensajes %}
-    <div class="mensaje {{ mensaje.clase }}">
-        <p>{{ mensaje.contenido }}</p>
-        <small>{{ mensaje.fecha_envio|date:"d M Y H:i" }}</small>
-    </div>
-
-    {% endfor %}
+  <h2>Selecciona un Entrevistador</h2>
+ 
+  <form method="post">
+    {% csrf_token %}
+    <select name="entrevistador_id">
+      {% for entrevistador in entrevistadores %}
+        <option value="{{ entrevistador.id }}">{{ entrevistador.user.username }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Iniciar Chat</button>
+  </form>
+  
 </div>
 {% endblock content %}
-
-{% block scripts %}
-
-{% endblock scripts %}
-
-{% endblock %}
