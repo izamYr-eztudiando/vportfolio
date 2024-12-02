@@ -16,7 +16,8 @@
 <br><br><br><br>
 <div class="container mt-4">
     <h1>Lista de Noticias</h1>
-    <a href="{% url 'crear_noticia' %}" class="btn btn-primary mb-4">Crear Nueva Noticia</a>
+    <a href="{% url 'crear_noticia' %}" class="btn btn-primary mb-4">Crear Nueva Noticia</a> <br>
+    <a href="{% url 'crear_noticia_form' %}" class="btn btn-primary mb-5">Crear Noticia A través de formulario</a>
     <ul class="list-group">
         {% for noticia in noticias %}
             <li class="list-group-item">

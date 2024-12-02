@@ -241,7 +241,7 @@ class Estado(models.Model):
         ordering = ['estado']
     
     def __str__(self):
-        return '%s,%s' % (self.id, self.estado)
+        return '%s' % (self.estado)
     
 class Tareas(models.Model):
     id = models.AutoField(primary_key=True)

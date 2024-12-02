@@ -28,6 +28,9 @@ import os
 #para el chat
 from django.http import JsonResponse
 
+#importamos el formulario de crear noticia
+from appportfolio.forms import NoticiaForm
+
 
 # Create your views here.
 
@@ -699,6 +702,18 @@ def crear_noticia(request):
             return HttpResponse("Error: El título y el contenido son obligatorios.", status=400)
         
     return render(request, 'crear_noticia.html')
+
+def crear_noticia_form(request):
+    if request.method == 'POST':
+        formulario = NoticiaForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_noticias')
+        else:
+            form = NoticiaForm()
+
+    context = {'form':formulario}
+    return render(request, 'crear_noticia_form.html', context=context)
 
 def listar_valoraciones(request):
     valoraciones = Valoracion.objects.all()

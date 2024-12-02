@@ -59,6 +59,7 @@ urlpatterns = [
     path('generar-pdf/<int:curriculum_id>/', views.generarPDF, name='generarPDF'),
     path('listar_noticias/', views.listar_noticias, name='listar_noticias'),
     path('crear_noticia/', views.crear_noticia, name='crear_noticia'),
+    path('crear_noticia_form/', views.crear_noticia_form, name='crear_noticia_form'),
     path('listar_valoraciones/', views.listar_valoraciones, name='listar_valoraciones'),
     path('actualizar_valoraciones/<int:pk>/edit/', views.actualizar_valoraciones, name='actualizar_valoraciones'),
     path('añadir_valoraciones/add/', views.añadir_valoraciones, name='añadir_valoraciones'),
