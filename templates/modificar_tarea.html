@@ -20,9 +20,9 @@
                 <option value="En Curso">En Curso</option>
                 <option value="Terminado">Terminado</option>
             </select><br> -->
-            <select name="estado" id="estado" value="{{ tarea.estado }}"required >
+            <select name="estado" id="estado" value="{{ tarea.estado }}" required >
                 {% for r in estados %}
-                    <option value="{{ r.estado }}">{{ r.estado }}</option>
+                    <option value="{{ r.estado }}" {% if tarea.estado.id == r.id %} selected="selected"{% endif %}>{{ r.estado }}</option> 
                 {% endfor %}
                 <!-- <option value="Pendiente">Pendiente</option>
                 <option value="En Curso">En Curso</option>
